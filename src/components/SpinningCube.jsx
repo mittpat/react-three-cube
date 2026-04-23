@@ -5,28 +5,37 @@ import { useGLTF } from '@react-three/drei'
 export default function SpinningCube() {
   const groupRef = useRef(null)
   const { scene } = useGLTF('/charizard_sv_v3.glb')
+  const leftHandRef = useRef(null)
+  const rightHandRef = useRef(null)
 
   useEffect(() => {
-    function logBones(node, depth = 0) {
-      const indent = '  '.repeat(depth)
-      console.log(`${indent}${node.name} (${node.type})`)
-      if (node.skeleton) {
-        console.log(`${indent}  -> Skeleton with ${node.skeleton.bones.length} bones:`)
-        node.skeleton.bones.forEach((bone, idx) => {
-          console.log(`${indent}    [${idx}] ${bone.name}`)
-        })
+    let skinnedMesh = null
+    scene.traverse(child => {
+      if (child.isSkinnedMesh && !skinnedMesh) {
+        skinnedMesh = child
       }
-      node.children?.forEach(child => logBones(child, depth + 1))
-    }
+    })
 
-    console.log('=== Charizard Rigging Structure ===')
-    logBones(scene)
+    if (skinnedMesh?.skeleton) {
+      const skeleton = skinnedMesh.skeleton
+      leftHandRef.current = skeleton.bones[30]
+      rightHandRef.current = skeleton.bones[40]
+    }
   }, [scene])
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (groupRef.current) {
       groupRef.current.rotation.y += 0.01
       groupRef.current.rotation.x += 0.002
+    }
+
+    const handRotation = Math.sin(clock.elapsedTime * 2) * (Math.PI / 9)
+
+    if (leftHandRef.current) {
+      leftHandRef.current.rotation.z = handRotation
+    }
+    if (rightHandRef.current) {
+      rightHandRef.current.rotation.z = -handRotation
     }
   })
 
