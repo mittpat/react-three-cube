@@ -7,9 +7,11 @@ export default function App() {
     <Canvas
       camera={{ position: [0, 0, 3] }}
       style={{ width: '100%', height: '100%' }}
+      gl={{ clearColor: '#6b7a8f' }}
     >
+      <color attach="background" args={['#6b7a8f']} />
       <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
+      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
 
       <PresentationControls
         global
