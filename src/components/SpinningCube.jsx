@@ -1,24 +1,20 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useGLTF } from '@react-three/drei'
 
 export default function SpinningCube() {
-  const meshRef = useRef(null)
+  const groupRef = useRef(null)
+  const { scene } = useGLTF('/charizard_sv_v2.glb')
 
   useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.005
-      meshRef.current.rotation.y += 0.01
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.01
     }
   })
 
   return (
-    <mesh ref={meshRef}>
-      <boxGeometry args={[2, 2, 2]} />
-      <meshStandardMaterial
-        color="#ff6b6b"
-        metalness={0.3}
-        roughness={0.4}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      <primitive object={scene} scale={0.8} />
+    </group>
   )
 }
