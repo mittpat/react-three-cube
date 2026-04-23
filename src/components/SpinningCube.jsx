@@ -24,11 +24,6 @@ export default function SpinningCube() {
   }, [scene])
 
   useFrame(({ clock }) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += 0.01
-      groupRef.current.rotation.x += 0.002
-    }
-
     const handRotation = Math.sin(clock.elapsedTime * 2) * (Math.PI / 9)
 
     if (leftHandRef.current) {
