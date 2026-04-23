@@ -20,7 +20,7 @@ export default function App() {
         <SpinningCube />
       </PresentationControls>
 
-      <OrbitControls autoRotate autoRotateSpeed={2} />
+      <OrbitControls />
     </Canvas>
   )
 }
