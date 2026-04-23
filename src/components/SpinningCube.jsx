@@ -1,32 +1,37 @@
 import { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
+import * as THREE from 'three'
 
 export default function SpinningCube() {
   const groupRef = useRef(null)
   const { scene, animations } = useGLTF('/charizard_sv_v3.glb')
-  const [mixer, setMixer] = useState(null)
-  const [actions, setActions] = useState([])
+  const mixerRef = useRef(null)
 
   useEffect(() => {
-    if (scene && animations.length > 0) {
-      const THREE = require('three')
-      const newMixer = new THREE.AnimationMixer(scene)
-      const newActions = animations.map(clip => newMixer.clipAction(clip))
+    console.log('GLB loaded. Animations found:', animations.length)
+    console.log('Animation names:', animations.map(a => a.name))
 
-      console.log('Available animations:', animations.map(a => a.name))
+    if (scene) {
+      const mixer = new THREE.AnimationMixer(scene)
+      mixerRef.current = mixer
 
-      if (newActions.length > 0) {
-        newActions[0].play()
+      if (animations.length > 0) {
+        const action = mixer.clipAction(animations[0])
+        console.log('Playing animation:', animations[0].name)
+        action.play()
+      } else {
+        console.log('No animations found in model')
       }
+    }
 
-      setMixer(newMixer)
-      setActions(newActions)
+    return () => {
+      mixerRef.current?.stopAllAction()
     }
   }, [scene, animations])
 
   useFrame((state, delta) => {
-    mixer?.update(delta)
+    mixerRef.current?.update(delta)
     if (groupRef.current) {
       groupRef.current.rotation.y += 0.005
     }
