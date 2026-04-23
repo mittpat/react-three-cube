@@ -24,7 +24,7 @@ export default function SpinningCube() {
   }, [scene])
 
   useFrame(({ clock }) => {
-    const handRotation = Math.sin(clock.elapsedTime * 2) * (Math.PI / 9)
+    const handRotation = Math.sin(clock.elapsedTime * 2) * (2 * Math.PI / 9)
 
     if (leftHandRef.current) {
       leftHandRef.current.rotation.z = handRotation
